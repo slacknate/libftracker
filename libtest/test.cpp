@@ -18,7 +18,7 @@ test::~test() {
 }
 FT_END_DTOR(test)
 
-FT_BEGIN_METHOD(void, test, method, (int))
+FT_BEGIN_METHOD(void, test, method, int)
 double* test::method(int x) {
     
     printf("method 1! %d\n", x);
@@ -37,7 +37,7 @@ double* test::method(int x, int y) {
 FT_END_METHOD(test, method)*/
 
 
-FT_BEGIN_METHOD(void, test, thrower, ())
+FT_BEGIN_METHOD(void, test, thrower)
 void test::thrower() {
     
     FT_THROW(this);

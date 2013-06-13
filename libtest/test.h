@@ -10,9 +10,9 @@ class test {
         test();
         ~test();
         
-        FT_DECL_METHOD(double*, test, method, (int));
+        FT_DECL_METHOD(double*, test, method, int);
         //FT_DECL_METHOD(double*, test, method, (int, int));
-        FT_DECL_METHOD(void, test, thrower, ());
+        FT_DECL_METHOD(void, test, thrower);
 };
 
 #endif

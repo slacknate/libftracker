@@ -3,8 +3,8 @@
 
 #include "FTracker.h"
 
-FT_DECL_FUNC(void, foo, ());
-//FT_DECL_FUNC(void, foo, (int));
-FT_DECL_FUNC(void, bar, ());
+FT_DECL_FUNC(void, foo, void);
+//FT_DECL_FUNC(void, foo, int);
+FT_DECL_FUNC(void, bar, void);
 
 #endif

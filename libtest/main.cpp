@@ -7,21 +7,21 @@
 FT_DECLARE()
 FT_IMPLEMENT()
 
-FT_BEGIN_FUNC(void, foo, ())
+FT_BEGIN_FUNC(void, foo)
 void foo() {
     
     printf("foo!\n");
 }
 FT_END_FUNC(foo)
 
-/*FT_BEGIN_FUNC(void, foo, (int x))
+/*FT_BEGIN_FUNC(void, foo, int)
 void foo(int x) {
     
     printf("foo!\n");
 }
 FT_END_FUNC(foo)*/
 
-FT_BEGIN_FUNC(void, bar, ())
+FT_BEGIN_FUNC(void, bar)
 void bar() {
     
     printf("bar!\n");
@@ -31,29 +31,23 @@ FT_END_FUNC(bar)
 FT_BEGIN_FUNC(int, main, (int, char *[]))
 int main(int argc, char *argv[]) {
     
-    #if defined _WIN32 || defined _WIN64 // windows
-    printf("windows!\n");
-    #else
-    printf("other os!\n");
-    #endif
-    
     try {
         
-        test t = FT_CTOR(test, ());
+        test t = FT_CTOR(test);
         FT_INVOKE(test, t, method, (5));
         
         for(int i = 0; i < 5; ++i) {
             
-            FT_CALL(foo, ());
+            FT_CALL(foo);
         }
         
-        FT_CALL(bar, ());
+        FT_CALL(bar);
         
-        test *p = new FT_CTOR(test, ());
+        test *p = new FT_CTOR(test);
         FT_INVOKE(test, *p, method, (5));
-        //FT_INVOKE(test, *p, method, (5, 5));
+        //FT_INVOKE(test, *p, method, (5, 7));
         
-        FT_INVOKE(test, t, thrower, ());
+        FT_INVOKE(test, t, thrower);
     }
     catch(FTException& e) {
         
