@@ -31,10 +31,16 @@ FT_END_FUNC(bar)
 FT_BEGIN_FUNC(int, main, (int, char *[]))
 int main(int argc, char *argv[]) {
     
+    #if defined _WIN32 || defined _WIN64 // windows
+    printf("windows!\n");
+    #else
+    printf("other os!\n");
+    #endif
+    
     try {
         
         test t = FT_CTOR(test, ());
-        FT_INVOKE(t, method, (5));
+        FT_INVOKE(test, t, method, (5));
         
         for(int i = 0; i < 5; ++i) {
             
@@ -44,10 +50,10 @@ int main(int argc, char *argv[]) {
         FT_CALL(bar, ());
         
         test *p = new FT_CTOR(test, ());
-        FT_INVOKE(*p, method, (5));
-        FT_INVOKE(*p, method, (5, 5));
+        FT_INVOKE(test, *p, method, (5));
+        //FT_INVOKE(test, *p, method, (5, 5));
         
-        FT_INVOKE(t, thrower, ());
+        FT_INVOKE(test, t, thrower, ());
     }
     catch(FTException& e) {
         

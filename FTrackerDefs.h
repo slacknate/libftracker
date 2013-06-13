@@ -1,15 +1,6 @@
 #ifndef FTRACKER_DEFS_H
 #define FTRACKER_DEFS_H
 
-#include <typeinfo>
-
-#ifndef _MSC_VER
-#include <cxxabi.h>
-#define FT_TYPE_ID(id)                          abi::__cxa_demangle(typeid(id).name(), NULL, 0, NULL)
-#else
-#define FT_TYPE_ID(id)                          typeid(id).name()
-#endif
-
 #include "FTLine.h"
 #include "FTFunc.h"
 #include "FTNameLookup.h"
@@ -36,7 +27,9 @@ Function table handling macros.
 /*
 Function tracking macros.
 */
-#define FT_DECL_FUNC(type, funcName, argList)   namespace FT_SPACE_NAME { typedef type (*funcName ## ptr)argList; } type funcName argList
+#define FT_DECL_FUNC(type, funcName, argList)   namespace FT_SPACE_NAME { namespace funcName ## Space { \
+                                                extern const char *const func; } \
+                                                typedef type (*funcName ## ptr)argList; } type funcName argList
 
 #define FT_BEGIN_FUNC(type, funcName, argList)  namespace FT_SPACE_NAME { namespace funcName ## Space { const char *const func = #type " " #funcName #argList; \
                                                 FTLine start(StartTable, func, __LINE__); } }
@@ -47,7 +40,10 @@ Function tracking macros.
 Class method tracking macros.
 */
 #define FT_DECL_METHOD(type, className, funcName, argList) \
-                                                namespace FT_SPACE_NAME { typedef type (className::*funcName ## ptr) argList; }
+                                                class funcName ## Space { public: \
+                                                typedef type (className::*funcName ## ptr) argList; \
+                                                static const char *const method; }; \
+                                                type funcName argList;
 
 #define FT_BEGIN_CTOR(className, argList)       namespace FT_SPACE_NAME { namespace className ## CtorSpace { const char *const ctor = #className "::" #className #argList; \
                                                 FTLine start(StartTable, ctor, __LINE__); } }
@@ -62,24 +58,28 @@ Class method tracking macros.
                                                 FTLine end(EndTable, dtor, __LINE__); } }                                         
                                             
 #define FT_BEGIN_METHOD(type, className, funcName, argList) \
-                                                namespace FT_SPACE_NAME { namespace className ## funcName ## Space { const char *const method = #type " " #className "::" #funcName #argList; \
-                                                FTLine start(StartTable, method, __LINE__); } }
+                                                const char *const className::funcName ## Space::method = #type " " #className "::" #funcName #argList; \
+                                                namespace FT_SPACE_NAME { namespace className ## funcName ## Space { ; \
+                                                FTLine start(StartTable, className::funcName ## Space::method, __LINE__); } }
 
 #define FT_END_METHOD(className, funcName)      namespace FT_SPACE_NAME { namespace className ## funcName ## Space { \
-                                                FTLine end(EndTable, method, __LINE__); } }
+                                                FTLine end(EndTable, className::funcName ## Space::method, __LINE__); } }
 
 /*
 Function calling.
 */
-#define FT_CALL(funcName, argList)              funcName argList; CallStack.Post(__FILE__, __LINE__, CreateFunctionName(FT_TYPE_ID(&funcName), #funcName, #argList))
+#define FT_CALL(funcName, argList)              funcName argList; CallStack.Post(__FILE__, __LINE__, FT_SPACE_NAME::funcName ## Space::func)
 
 #define FT_CTOR(className, argList)             className argList; CallStack.Post(__FILE__, __LINE__, #className "::" #className #argList)
 
-#define FT_INVOKE(object, funcName, argList)    (object).funcName argList; CallStack.Post(__FILE__, __LINE__, CreateMethodName(FT_TYPE_ID(FT_SPACE_NAME::funcName ## ptr), FT_TYPE_ID(object), #funcName, #argList))
+#define FT_INVOKE(className, object, funcName, argList) \
+                                                (object).funcName argList; CallStack.Post(__FILE__, __LINE__, className::funcName ## Space::method)
 
 /*
 Utility macros.
-*/                                               
+*/                                           
+#define FT_THROW(data)                          throw FTException(__FILE__, __LINE__, data)
+    
 #define FT_PRINT_STACK(stream)                  CallStack.Print(stream)
 
 #define FT_FUNC_LOOKUP(fileName, lineNumber)    NameLookup.GetFunction(fileName, lineNumber)

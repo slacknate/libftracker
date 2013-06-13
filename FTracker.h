@@ -2,7 +2,6 @@
 #define FTRACKER_H
 
 #include "FTrackerDefs.h"
-#include "FTrackerUtil.h"
 
 extern "C" {
 
