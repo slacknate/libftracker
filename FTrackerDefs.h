@@ -40,10 +40,10 @@ Function tracking macros.
 Class method tracking macros.
 */
 #define FT_DECL_METHOD(type, className, funcName, ...) \
+                                                type funcName ( __VA_ARGS__ ); \
                                                 class funcName ## Space { public: \
                                                 typedef type (className::*funcName ## ptr) ( __VA_ARGS__ ); \
-                                                static const char *const method; }; \
-                                                type funcName ( __VA_ARGS__ );
+                                                static const char *const method; };
 
 #define FT_BEGIN_CTOR(className, ...)           namespace FT_SPACE_NAME { namespace className ## CtorSpace { const char *const ctor = #className "::" #className "(" #__VA_ARGS__ ")"; \
                                                 FTLine start(StartTable, ctor, __LINE__); } }
