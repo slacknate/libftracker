@@ -15,4 +15,12 @@ class test {
         FT_DECL_METHOD(void, test, thrower);
 };
 
+class test2 {
+    
+    public:
+        
+        test2();
+        ~test2();
+};
+
 #endif

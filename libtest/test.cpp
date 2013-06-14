@@ -18,6 +18,20 @@ test::~test() {
 }
 FT_END_DTOR(test)
 
+FT_BEGIN_CTOR(test2, ())
+test2::test2() {
+    
+    
+}
+FT_END_CTOR(test2)
+
+FT_BEGIN_DTOR(test2)
+test2::~test2() {
+    
+    
+}
+FT_END_DTOR(test2)
+
 FT_BEGIN_METHOD(void, test, method, int)
 double* test::method(int x) {
     

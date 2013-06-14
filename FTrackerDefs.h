@@ -41,9 +41,9 @@ Class method tracking macros.
 */
 #define FT_DECL_METHOD(type, className, funcName, ...) \
                                                 type funcName ( __VA_ARGS__ ); \
-                                                class funcName ## Space { public: \
+                                                static class funcName ## Space { public: \
                                                 typedef type (className::*funcName ## ptr) ( __VA_ARGS__ ); \
-                                                static const char *const method; };
+                                                static const char *const method; } funcName ## Space2;
 
 #define FT_BEGIN_CTOR(className, ...)           namespace FT_SPACE_NAME { namespace className ## CtorSpace { const char *const ctor = #className "::" #className "(" #__VA_ARGS__ ")"; \
                                                 FTLine start(StartTable, ctor, __LINE__); } }
@@ -68,12 +68,13 @@ Class method tracking macros.
 /*
 Function calling.
 */
+// FT_SPACE_NAME isn't the same across all files, could cause problems
 #define FT_CALL(funcName, ...)                  funcName ( __VA_ARGS__ ); CallStack.Post(__FILE__, __LINE__, FT_SPACE_NAME::funcName ## Space::func)
 
 #define FT_CTOR(className, ...)                 className ( __VA_ARGS__ ); CallStack.Post(__FILE__, __LINE__, #className "::" #className "(" #__VA_ARGS__ ")")
 
-#define FT_INVOKE(className, object, funcName, ...) \
-                                                (object).funcName ( __VA_ARGS__ ); CallStack.Post(__FILE__, __LINE__, className::funcName ## Space::method)
+#define FT_INVOKE(object, funcName, ...) \
+                                                (object).funcName ( __VA_ARGS__ ); CallStack.Post(__FILE__, __LINE__, (object).funcName ## Space2.method)
 
 /*
 Utility macros.

@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     try {
         
         test t = FT_CTOR(test);
-        FT_INVOKE(test, t, method, (5));
+        FT_INVOKE(t, method, 5);
         
         for(int i = 0; i < 5; ++i) {
             
@@ -44,10 +44,10 @@ int main(int argc, char *argv[]) {
         FT_CALL(bar);
         
         test *p = new FT_CTOR(test);
-        FT_INVOKE(test, *p, method, (5));
-        //FT_INVOKE(test, *p, method, (5, 7));
+        FT_INVOKE(*p, method, 5);
+        //FT_INVOKE(*p, method, 5, 7);
         
-        FT_INVOKE(test, t, thrower);
+        FT_INVOKE(t, thrower);
     }
     catch(FTException& e) {
         
